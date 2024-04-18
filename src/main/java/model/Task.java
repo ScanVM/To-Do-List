@@ -1,10 +1,8 @@
 package model;
-
-import org.bson.codecs.pojo.annotations.BsonId;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 import org.bson.types.ObjectId;
-
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Task {
     @BsonProperty("_id")
@@ -123,17 +121,30 @@ public class Task {
 
     @Override
     public String toString() {
-        return "Task{" +
-                "id=" + id +
-                ", userId=" + userId +
-                ", title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", status='" + status + '\'' +
-                ", priority=" + priority +
-                ", completed=" + completed +
-                ", dateCreated=" + dateCreated +
-                ", dateCompleted=" + dateCompleted +
-                ", tag='" + tag + '\'' +
-                '}';
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+        String formattedDateCreated = dateCreated.format(formatter);
+
+        if (dateCompleted != null) {
+            String formattedDateCompleted = dateCompleted.format(formatter);
+            return "Tarefa" + "\n" +
+                    "Título: " + title + "\n" +
+                    "Descrição: " + description + "\n" +
+                    "Status: " + status + "\n" +
+                    "Nível de prioridade: " + priority + "\n" +
+                    "Tag: " + tag + "\n" +
+                    "Date de criação: " + formattedDateCreated + "\n" +
+                    "Data de conclusão: " + formattedDateCompleted + "\n"
+                    ;
+        }else {
+            return "Tarefa" + "\n" +
+                    "Título: " + title + "\n" +
+                    "Descrição: " + description + "\n" +
+                    "Status: " + status + "\n" +
+                    "Nível de prioridade: " + priority + "\n" +
+                    "Tag: " + tag + "\n" +
+                    "Data de criação: " + formattedDateCreated + "\n" +
+                    "Data de conclusão: tarefa ainda não concluída." + "\n"
+                    ;
+        }
     }
 }

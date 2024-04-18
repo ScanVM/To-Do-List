@@ -9,7 +9,7 @@ public class User {
     @BsonId
     private ObjectId id;
     @BsonProperty("username")
-    private String userame;
+    private String username;
     @BsonProperty("passwordHash")
     private String passwordHash;
     @BsonProperty("email")
@@ -20,8 +20,8 @@ public class User {
 
     public User(){}
 
-    public User(String userame, String passwordHash, String email, LocalDateTime createdAt) {
-        this.userame = userame;
+    public User(String username, String passwordHash, String email, LocalDateTime createdAt) {
+        this.username = username;
         this.passwordHash = passwordHash;
         this.email = email;
         this.createdAt = createdAt;
@@ -36,11 +36,11 @@ public class User {
     }
 
     public String getUserame() {
-        return userame;
+        return username;
     }
 
     public void setUserame(String userame) {
-        this.userame = userame;
+        this.username = userame;
     }
 
     public String getPasswordHash() {

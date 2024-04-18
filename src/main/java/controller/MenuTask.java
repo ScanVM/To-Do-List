@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class MenuTask extends TaskDAO {
-    public void interfaceMenuTask(ObjectId userId){
+    public boolean interfaceMenuTask(ObjectId userId){
         String[] menu = {"Criar tarefa", "Buscar tarefa","Editar tarefa", "Excluir tarefa", "Concluir tarefa", "Sair"};
         List<Task> searchList;
 
@@ -25,35 +25,47 @@ public class MenuTask extends TaskDAO {
                         if (createTask(newTask)){
                             JOptionPane.showMessageDialog(null, "Tarefa cadastrada com sucesso!");
                         }
-                    }catch (Exception e) {
-                        System.out.println(e.getMessage());
-                        //JOptionPane.showMessageDialog(null, e);
+                    } catch (NumberFormatException e) {
+                        JOptionPane.showMessageDialog(null, "Erro: A prioridade deve ser um número entre 0 e 10.");
+                    } catch (Exception e) {
+                        JOptionPane.showMessageDialog(null, "Ocorreu um erro ao criar a tarefa. Por favor, tente novamente.");
+                        e.printStackTrace();
                     }
                     break;
                 case 1:
                     try {
-                        String[] menuSearch = {"Buscar por título", "Buscar por tag","Buscar por prioridade"};
+                        String[] menuSearch = {"Buscar por título", "Buscar por tag","Buscar por prioridade", "Buscar todas as tarefas"};
                         int choiceSearch = JOptionPane.showOptionDialog(null, "Selecione uma operação:", "Menu de pesquisa", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, menuSearch, menuSearch[0]);
                         switch (choiceSearch) {
                             case 0:
                                 String titleSearch = JOptionPane.showInputDialog(null, "Insira o titulo para pesquisa: ");
                                 searchList = searchTasks(userId, null, titleSearch, null);
                                 for(Task task : searchList){
-                                    JOptionPane.showMessageDialog(null, task.toString());
+                                    //JOptionPane.showMessageDialog(null, task.toString());
+                                    System.out.println(task.toString());
                                 }
                                 break;
                             case 1:
                                 String tagSearch = JOptionPane.showInputDialog(null, "Insira a tag para pesquisa: ");
                                 searchList = searchTasks(userId, tagSearch, null, null);
                                 for(Task task : searchList){
-                                    JOptionPane.showMessageDialog(null, task.toString());
+                                    //JOptionPane.showMessageDialog(null, task.toString());
+                                    System.out.println(task.toString());
                                 }
                                 break;
                             case 2:
                                 String prioritySearch = JOptionPane.showInputDialog(null, "Insira o grau de prioridade para pesquisa: ");
                                 searchList = searchTasks(userId, null, null, Integer.parseInt(prioritySearch));
                                 for(Task task : searchList){
-                                    JOptionPane.showMessageDialog(null, task.toString());
+                                    //JOptionPane.showMessageDialog(null, task.toString());
+                                    System.out.println(task.toString());
+                                }
+                                break;
+                            case 3:
+                                searchList = searchTasks(userId, null, null, null);
+                                for(Task task : searchList){
+                                    //JOptionPane.showMessageDialog(null, task.toString());
+                                    System.out.println(task.toString());
                                 }
                                 break;
                             default:
@@ -128,9 +140,8 @@ public class MenuTask extends TaskDAO {
                     }
                     break;
                 case 5:
-                    System.out.println("Desligando aplicação...");
-                    System.exit(0);
-                    break;
+                    System.out.println("Retornando ao menu de usuário...");
+                    return true;
                 default:
                     JOptionPane.showMessageDialog(null, "Escolha uma opção válida do menu.");
                     break;

@@ -1,9 +1,7 @@
 package controller;
-
 import dao.UserDAO;
 import model.User;
 import org.bson.types.ObjectId;
-
 import javax.swing.*;
 import java.time.LocalDateTime;
 
@@ -20,7 +18,10 @@ public class MenuUser extends UserDAO {
                     try {
                         ObjectId userIdentifier = login();
                         if (userIdentifier != null) {
-                            menuTask.interfaceMenuTask(userIdentifier);
+                           boolean returnToUserMenu = menuTask.interfaceMenuTask(userIdentifier);
+                           if (returnToUserMenu) {
+                               break;
+                           }
                         }
 
                     }catch (Exception e) {
@@ -35,7 +36,10 @@ public class MenuUser extends UserDAO {
                         String email = JOptionPane.showInputDialog(null, "Insira seu e-mail: ");
                         User newUser = new User(username,password,email, LocalDateTime.now());
                         ObjectId newUserId = create(newUser);
-                        menuTask.interfaceMenuTask(newUserId);
+                        boolean returnToUserMenu = menuTask.interfaceMenuTask(newUserId);
+                        if (returnToUserMenu) {
+                            break;
+                        }
                     }catch (Exception e) {
                         System.out.println(e.getMessage());
                         //JOptionPane.showMessageDialog(null, e);

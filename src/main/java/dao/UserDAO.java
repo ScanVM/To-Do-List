@@ -10,6 +10,7 @@ import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 import org.bson.types.ObjectId;
+import service.MongoDBConfig;
 
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
@@ -33,12 +34,6 @@ public class UserDAO {
 
         InsertOneResult result = collection.insertOne(user);
         return result.getInsertedId().asObjectId().getValue();
-    }
-
-    public boolean deleteUserByUsername(String username) {
-        Document filter = new Document("username", username);
-        DeleteResult result = collection.deleteOne(filter);
-        return result.getDeletedCount() > 0;
     }
 
     public boolean deleteUserById(ObjectId userId) {
