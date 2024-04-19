@@ -5,32 +5,40 @@ import org.bson.types.ObjectId;
 import javax.swing.*;
 import java.time.LocalDateTime;
 
+/**
+ * Classe que possui o menu com opções para ações do usuário
+ */
 public class MenuUser extends UserDAO {
     MenuTask menuTask = new MenuTask();
     JFrame frame = new JFrame();
 
+    /**
+     * Interface do menu visivel ao usuário
+     */
     public void interfaceMenuUser(){
-        String[] menu = {"Login", "Cadastro","Remover usuário","Sair"};
-        frame.setAlwaysOnTop(true);
+        String[] menu = {"Login", "Cadastro","Remover usuário","Sair"}; // Opções do menu principal
+        frame.setAlwaysOnTop(true); // Define que a janela sempre aparecerá no topo das outras
         while (true) {
             int choice = JOptionPane.showOptionDialog(frame, "Selecione uma operação:", "Menu", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, menu, menu[0]);
+            //Menu inicial para o usuário entrar no sistema
             switch (choice) {
                 case 0:
                     try {
-                        ObjectId userIdentifier = login();
+                        ObjectId userIdentifier = login(); //Autenticação do usuário por meio do login
                         if (userIdentifier != null) {
+                            //Menu de funções sobre o usuário
                             String[] menuOthersUser= {"Menu de tarefas","Alterar senha", "Alterar e-mail","Informações sobre a conta","Voltar"};
                            boolean continueLoop = true;
                            do {
                                int choiceOthers = JOptionPane.showOptionDialog(frame, "Selecione uma operação:", "Menu usuário", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, menuOthersUser, menuOthersUser[0]);
                                switch (choiceOthers) {
-                                   case 0:
+                                   case 0: // Abre o menu de tarefas
                                        boolean returnToUserMenu = menuTask.interfaceMenuTask(userIdentifier);
                                        if (returnToUserMenu) {
                                            break;
                                        }
                                        break;
-                                   case 1:
+                                   case 1: // Alterar a senha
                                        JPasswordField newPasswordField = new JPasswordField();
                                        Object[] message = {
                                                "Insira sua nova senha:", newPasswordField
@@ -51,7 +59,7 @@ public class MenuUser extends UserDAO {
                                            }
                                        }
                                        break;
-                                   case 2:
+                                   case 2: //Alterar e-mail
                                        String newEmail = JOptionPane.showInputDialog(frame, "Insira o seu novo endereço de e-mail:");
                                        if (newEmail == null || newEmail.isEmpty()) {
                                            JOptionPane.showMessageDialog(frame, "O novo e-mail não pode ser vazio.");
@@ -63,7 +71,7 @@ public class MenuUser extends UserDAO {
                                            }
                                        }
                                        break;
-                                   case 3:
+                                   case 3: //Informações sobre a conta do usuário
                                        User user;
                                        user = getUserInfo(userIdentifier);
                                        if (user != null) {
@@ -72,7 +80,7 @@ public class MenuUser extends UserDAO {
                                            JOptionPane.showMessageDialog(frame, "Não foi possível exibir os dados, tente novamente.");
                                        }
                                        break;
-                                   case 4:
+                                   case 4: // Opção para retornar ao menu anterior
                                        continueLoop = false;
                                        break;
                                    default:
@@ -87,7 +95,7 @@ public class MenuUser extends UserDAO {
                         JOptionPane.showMessageDialog(frame, "Houve um problema ao fazer login. Por favor, tente novamente.");
                     }
                     break;
-                case 1:
+                case 1: // Opção para cadastro
                     try {
                         JTextField usernameField = new JTextField();
                         JPasswordField passwordField = new JPasswordField();
@@ -97,7 +105,7 @@ public class MenuUser extends UserDAO {
                                 "Insira uma senha:", passwordField,
                                 "Insira seu e-mail:", emailField
                         };
-
+                        //Recolho as informações do usuário para criar sua conta
                         int option = JOptionPane.showConfirmDialog(frame, message, "Cadastro", JOptionPane.OK_CANCEL_OPTION);
                         if (option == JOptionPane.OK_OPTION) {
                             String username = usernameField.getText();
@@ -108,8 +116,9 @@ public class MenuUser extends UserDAO {
                                 JOptionPane.showMessageDialog(frame, "Username, senha e e-mail não podem ser vazios.");
                                 break;
                             }
-
+                            //Crio o objeto user
                             User newUser = new User(username, password, email, LocalDateTime.now());
+                            //Envio para o banco o novo usuário
                             ObjectId newUserId = create(newUser);
                             if (newUserId != null) {
                                 JOptionPane.showMessageDialog(frame, "Usuário registrado com sucesso.");
@@ -125,10 +134,12 @@ public class MenuUser extends UserDAO {
                         JOptionPane.showMessageDialog(frame, "Houve um problema ao criar o usuário. Por favor, tente novamente.");
                     }
                     break;
-                case 2:
+                case 2: //Remove o usuário
                     try {
+                        //Autentica o usuário para encontra-lo no banco de dados
                         ObjectId userIdentifier = login();
                         if (userIdentifier != null) {
+                            //Confirma se ele de fato quer excluir
                             String choiceUser = JOptionPane.showInputDialog(frame, "Tem certeza que deseja excluir sua conta ? Y/N").toLowerCase();
                             if (choiceUser.isEmpty() || !choiceUser.equals("y") && !choiceUser.equals("n")) {
                                 JOptionPane.showMessageDialog(frame, "Por favor, insira 'y' para confirmar ou 'n' para cancelar.");
@@ -136,6 +147,7 @@ public class MenuUser extends UserDAO {
                             }
                             if (choiceUser.equals("y")) {
                                 try {
+                                    //Exclui o usuário
                                     if (deleteUserById(userIdentifier)) {
                                         JOptionPane.showMessageDialog(frame, "Excluído com sucesso!");
                                     } else {
@@ -152,7 +164,7 @@ public class MenuUser extends UserDAO {
                         JOptionPane.showMessageDialog(frame, "Houve um problema ao fazer login. Por favor, tente novamente.");
                     }
                     break;
-                case 3:
+                case 3: //Fecha o programa
                     System.out.println("Fechando sua To-Do-List...");
                     System.exit(0);
                     break;
@@ -163,6 +175,11 @@ public class MenuUser extends UserDAO {
         }
     }
 
+    /**
+     * Realiza o login de um usuário.
+     *
+     * @return O ObjectId do usuário se o login for bem sucedido, null caso contrário.
+     */
     public ObjectId login() {
         try {
             JTextField usernameField = new JTextField();
@@ -185,6 +202,7 @@ public class MenuUser extends UserDAO {
                     JOptionPane.showMessageDialog(frame, "A senha não pode ser vazia.");
                     return null;
                 }
+                //Autentica o usuário nesse método
                 return authenticateUser(username, password);
             } else {
                 return null;

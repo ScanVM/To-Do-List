@@ -20,9 +20,17 @@ import java.util.List;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
+/**
+ * Classe TaskDAO.
+ * Esta classe é responsável por realizar operações de banco de dados relacionadas à tarefa.
+ */
 public class TaskDAO {
     private final MongoCollection<Task> collection;
 
+    /**
+     * Construtor padrão.
+     * Inicializa a coleção de tarefas do banco de dados.
+     */
     public TaskDAO() {
         CodecRegistry pojoCodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
                 fromProviders(PojoCodecProvider.builder().automatic(true).build()));
@@ -30,6 +38,12 @@ public class TaskDAO {
         collection = database.getCollection("Tasks", Task.class);
     }
 
+    /**
+     * Cria uma nova tarefa no banco de dados.
+     *
+     * @param task A tarefa a ser criada.
+     * @return true se a tarefa foi criada com sucesso, false caso contrário.
+     */
     public boolean createTask(Task task) {
         if (isTaskExist(task.getUserId(), task.getTitle())){
             throw new IllegalArgumentException("A tarefa já existe.");
@@ -38,6 +52,15 @@ public class TaskDAO {
         return true;
     }
 
+    /**
+     * Atualiza uma tarefa no banco de dados.
+     *
+     * @param taskId O ObjectId da tarefa a ser atualizada.
+     * @param userId O ObjectId do usuário que criou a tarefa.
+     * @param newTitle O novo título da tarefa.
+     * @param newDescription A nova descrição da tarefa.
+     * @return true se a tarefa foi atualizada com sucesso, false caso contrário.
+     */
     public boolean updateTask(ObjectId taskId, ObjectId userId, String newTitle, String newDescription) {
         Bson filter =  Filters.and(Filters.eq("_id",taskId), Filters.eq("user_id", userId));
         Document update = new Document();
@@ -51,6 +74,13 @@ public class TaskDAO {
         return result.getMatchedCount() > 0;
     }
 
+    /**
+     * Deleta uma tarefa do banco de dados pelo seu ID.
+     *
+     * @param taskId O ObjectId da tarefa a ser deletada.
+     * @param userId O ObjectId do usuário que criou a tarefa.
+     * @return true se a tarefa foi deletada com sucesso, false caso contrário.
+     */
     public boolean deleteTaskById(ObjectId taskId, ObjectId userId) {
         Bson filter = Filters.and(Filters.eq("_id", taskId), Filters.eq("user_id", userId));
         DeleteResult result = collection.deleteOne(filter);
@@ -60,6 +90,15 @@ public class TaskDAO {
         return true;
     }
 
+    /**
+     * Busca tarefas no banco de dados.
+     *
+     * @param userId O ObjectId do usuário que criou as tarefas.
+     * @param tag A tag das tarefas a serem buscadas.
+     * @param title O título das tarefas a serem buscadas.
+     * @param priority A prioridade das tarefas a serem buscadas.
+     * @return Uma lista de tarefas que correspondem aos critérios de busca.
+     */
     public List<Task> searchTasks(ObjectId userId, String tag, String title, Integer priority) {
         List<Task> tasks = new ArrayList<>();
         List<Bson> filters = new ArrayList<>();
@@ -84,11 +123,26 @@ public class TaskDAO {
         return tasks;
     }
 
+    /**
+     * Verifica se uma tarefa já existe no banco de dados.
+     *
+     * @param userId O ObjectId do usuário que criou a tarefa.
+     * @param title O título da tarefa.
+     * @return true se a tarefa já existir, false caso contrário.
+     */
     private boolean isTaskExist(ObjectId userId, String title) {
         Bson filter =  Filters.and(Filters.eq("user_id", userId), Filters.eq("title", title));
         long count = collection.countDocuments(filter);
         return count > 0;
     }
+
+    /**
+     * Encontra o ObjectId de uma tarefa pelo seu título.
+     *
+     * @param userId O ObjectId do usuário que criou a tarefa.
+     * @param title O título da tarefa.
+     * @return O ObjectId da tarefa, ou null se a tarefa não for encontrada.
+     */
     public ObjectId findTaskIdByTitle(ObjectId  userId, String title) {
         Bson filter =  Filters.and(Filters.eq("user_id", userId), Filters.eq("title",title));
 
@@ -100,6 +154,14 @@ public class TaskDAO {
             return null;
         }
     }
+
+    /**
+     * Completa uma tarefa no banco de dados.
+     *
+     * @param taskId O ObjectId da tarefa a ser completada.
+     * @param userId O ObjectId do usuário que criou a tarefa.
+     * @return true se a tarefa foi completada com sucesso, false caso contrário.
+     */
     public boolean completeTask(ObjectId taskId, ObjectId userId) {
         Bson filter =  Filters.and(Filters.eq("_id", taskId), Filters.eq("user_id", userId));
         Bson update = Updates.combine(

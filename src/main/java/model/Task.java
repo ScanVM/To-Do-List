@@ -28,6 +28,18 @@ public class Task {
 
     public Task(){}
 
+    /**
+     * Construtor com parâmetros.
+     *
+     * @param userId ID do usuário que criou a tarefa.
+     * @param title Título da tarefa.
+     * @param description Descrição da tarefa.
+     * @param status Status da tarefa.
+     * @param priority Prioridade da tarefa.
+     * @param dateCreated Data de criação da tarefa.
+     * @param dateCompleted Data de conclusão da tarefa.
+     * @param tag Tag associada à tarefa.
+     */
     public Task(ObjectId userId, String title, String description, String status, int priority, LocalDateTime dateCreated, LocalDateTime dateCompleted, String tag) {
         this.userId = userId;
         this.title = title;

@@ -21,6 +21,14 @@ public class User {
 
     public User(){}
 
+    /**
+     * Construtor com parâmetros.
+     *
+     * @param username Nome do usuário.
+     * @param passwordHash Hash da senha do usuário.
+     * @param email E-mail do usuário.
+     * @param createdAt Data e hora da criação do usuário.
+     */
     public User(String username, String passwordHash, String email, LocalDateTime createdAt) {
         this.username = username;
         this.passwordHash = passwordHash;
@@ -74,7 +82,6 @@ public class User {
         String formattedcreatedAt = createdAt.format(formatter);
         return "Usuário " + "\n" +
                 "Username: " + username + "\n" +
-                "Senha: " + passwordHash + "\n" +
                 "E-mail: " + email + "\n" +
                 "Data de criação da conta: " + formattedcreatedAt + "\n";
     }
