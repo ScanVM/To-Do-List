@@ -54,7 +54,7 @@ public class MenuTask extends TaskDAO {
                         JOptionPane.showMessageDialog(frame, "Erro: A prioridade deve ser um número entre 0 e 10.");
                     } catch (Exception e) {
                         JOptionPane.showMessageDialog(frame, "Ocorreu um erro ao criar a tarefa. Por favor, tente novamente.");
-                        e.printStackTrace();
+                        System.out.println(e.getMessage());
                     }
                     break;
                 case 1:
@@ -82,7 +82,7 @@ public class MenuTask extends TaskDAO {
                                     int priority = Integer.parseInt(prioritySearch);
                                     searchList = searchTasks(userId, null, null, priority);
                                     for(Task task : searchList){
-                                        tasksString.append(task.toString()).append("\n\n");;
+                                        tasksString.append(task.toString()).append("\n\n");
                                     }
                                 } catch (NumberFormatException e) {
                                     JOptionPane.showMessageDialog(frame, "Por favor, insira um número válido para a prioridade.");
