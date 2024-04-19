@@ -41,17 +41,14 @@ public class TaskDAO {
     public boolean updateTask(ObjectId taskId, ObjectId userId, String newTitle, String newDescription) {
         Bson filter =  Filters.and(Filters.eq("_id",taskId), Filters.eq("user_id", userId));
         Document update = new Document();
-        if (newTitle != null){
-            update.append("$set", new Document("title",newTitle));
+        if (newTitle != null && !newTitle.isEmpty()){
+            update.append("title", newTitle);
         }
-        if (newDescription != null){
-            update.append("$set", new Document("description",newDescription));
+        if (newDescription != null && !newDescription.isEmpty()){
+            update.append("description", newDescription);
         }
-        UpdateResult result = collection.updateOne(filter, update);
-        if (result.getMatchedCount() == 0){
-            throw  new IllegalArgumentException("Tarefa não encontrada.");
-        }
-        return true;
+        UpdateResult result = collection.updateOne(filter, new Document("$set", update));
+        return result.getMatchedCount() > 0;
     }
 
     public boolean deleteTaskById(ObjectId taskId, ObjectId userId) {

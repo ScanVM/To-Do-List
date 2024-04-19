@@ -18,14 +18,36 @@ public class MenuTask extends TaskDAO {
             switch (choice) {
                 case 0:
                     try {
-                        String title = JOptionPane.showInputDialog(frame, "Insira o titulo de sua tarefa: ");
-                        String description = JOptionPane.showInputDialog(frame, "Insira uma descrição da tarefa: ");
-                        String status = JOptionPane.showInputDialog(frame, "Coloque o seu status personalizado: ");
-                        int priority = Integer.parseInt(JOptionPane.showInputDialog(frame, "Informe o grau de prioridade entre 0 á 10: "));
-                        String tag = JOptionPane.showInputDialog(frame, "Insira uma tag para identificar sua tarefa: ");
-                        Task newTask = new Task(userId, title, description, status, priority, LocalDateTime.now(),null, tag);
-                        if (createTask(newTask)){
-                            JOptionPane.showMessageDialog(frame, "Tarefa cadastrada com sucesso!");
+                        JTextField titleField = new JTextField();
+                        JTextField descriptionField = new JTextField();
+                        JTextField statusField = new JTextField();
+                        JTextField priorityField = new JTextField();
+                        JTextField tagField = new JTextField();
+                        Object[] message = {
+                                "Insira o titulo de sua tarefa:", titleField,
+                                "Insira uma descrição da tarefa:", descriptionField,
+                                "Coloque o seu status personalizado:", statusField,
+                                "Informe o grau de prioridade entre 0 á 10:", priorityField,
+                                "Insira uma tag para identificar sua tarefa:", tagField
+                        };
+
+                        int option = JOptionPane.showConfirmDialog(frame, message, "Criar Tarefa", JOptionPane.OK_CANCEL_OPTION);
+                        if (option == JOptionPane.OK_OPTION) {
+                            String title = titleField.getText();
+                            String description = descriptionField.getText();
+                            String status = statusField.getText();
+                            int priority = Integer.parseInt(priorityField.getText());
+                            String tag = tagField.getText();
+
+                            if (title.isEmpty() || description.isEmpty() || status.isEmpty() || tag.isEmpty()) {
+                                JOptionPane.showMessageDialog(frame, "Título, descrição, status e tag não podem ser vazios.");
+                                break;
+                            }
+
+                            Task newTask = new Task(userId, title, description, status, priority, LocalDateTime.now(), null, tag);
+                            if (createTask(newTask)){
+                                JOptionPane.showMessageDialog(frame, "Tarefa cadastrada com sucesso!");
+                            }
                         }
                     } catch (NumberFormatException e) {
                         JOptionPane.showMessageDialog(frame, "Erro: A prioridade deve ser um número entre 0 e 10.");
@@ -118,14 +140,26 @@ public class MenuTask extends TaskDAO {
                                     }
                                     break;
                                 case 2:
-                                    String newTitleOption2 = JOptionPane.showInputDialog(frame, "Insira um novo titulo para sua tarefa: ");
-                                    String newDescriptionOption2 = JOptionPane.showInputDialog(frame, "Insira uma nova descrição para sua tarefa: ");
-                                    if (newTitleOption2 == null || newTitleOption2.isEmpty() || newDescriptionOption2 == null || newDescriptionOption2.isEmpty()) {
-                                        JOptionPane.showMessageDialog(frame, "O novo título e a nova descrição não podem ser vazios.");
-                                        break;
-                                    }
-                                    if (updateTask(taskIdUpdate, userId, newTitleOption2, newDescriptionOption2)){
-                                        JOptionPane.showMessageDialog(frame, "Título e descrição atualizados com sucesso!");
+                                    JTextField newTitleField = new JTextField();
+                                    JTextField newDescriptionField = new JTextField();
+                                    Object[] message = {
+                                            "Insira um novo titulo para sua tarefa:", newTitleField,
+                                            "Insira uma nova descrição para sua tarefa:", newDescriptionField
+                                    };
+
+                                    int option = JOptionPane.showConfirmDialog(frame, message, "Editar Tarefa", JOptionPane.OK_CANCEL_OPTION);
+                                    if (option == JOptionPane.OK_OPTION) {
+                                        String newTitleOption2 = newTitleField.getText();
+                                        String newDescriptionOption2 = newDescriptionField.getText();
+
+                                        if (newTitleOption2.isEmpty() || newDescriptionOption2.isEmpty()) {
+                                            JOptionPane.showMessageDialog(frame, "O novo título e a nova descrição não podem ser vazios.");
+                                            break;
+                                        }
+
+                                        if (updateTask(taskIdUpdate, userId, newTitleOption2, newDescriptionOption2)){
+                                            JOptionPane.showMessageDialog(frame, "Título e descrição atualizados com sucesso!");
+                                        }
                                     }
                                     break;
                                 default:

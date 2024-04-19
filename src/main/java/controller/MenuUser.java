@@ -33,22 +33,37 @@ public class MenuUser extends UserDAO {
                     break;
                 case 1:
                     try {
-                        String username = JOptionPane.showInputDialog(frame, "Insira um username: ");
-                        String password = JOptionPane.showInputDialog(frame, "Insira uma senha: ");
-                        String email = JOptionPane.showInputDialog(frame, "Insira seu e-mail: ");
-                        if (username == null || username.isEmpty() ||password == null || password.isEmpty() || email == null || email.isEmpty()) {
-                            JOptionPane.showMessageDialog(frame, "Username, senha e e-mail não podem ser vazios.");
-                            break;
-                        }
-                        User newUser = new User(username,password,email, LocalDateTime.now());
-                        ObjectId newUserId = create(newUser);
-                        if (newUserId != null) {
-                            boolean returnToUserMenu = menuTask.interfaceMenuTask(newUserId);
-                            if (returnToUserMenu) {
+                        JTextField usernameField = new JTextField();
+                        JPasswordField passwordField = new JPasswordField();
+                        JTextField emailField = new JTextField();
+                        Object[] message = {
+                                "Insira um username:", usernameField,
+                                "Insira uma senha:", passwordField,
+                                "Insira seu e-mail:", emailField
+                        };
+
+                        int option = JOptionPane.showConfirmDialog(frame, message, "Cadastro", JOptionPane.OK_CANCEL_OPTION);
+                        if (option == JOptionPane.OK_OPTION) {
+                            String username = usernameField.getText();
+                            String password = new String(passwordField.getPassword());
+                            String email = emailField.getText();
+
+                            if (username.isEmpty() || password.isEmpty() || email.isEmpty()) {
+                                JOptionPane.showMessageDialog(frame, "Username, senha e e-mail não podem ser vazios.");
                                 break;
                             }
-                        } else {
-                            JOptionPane.showMessageDialog(frame, "Houve um problema ao criar o usuário.");
+
+                            User newUser = new User(username, password, email, LocalDateTime.now());
+                            ObjectId newUserId = create(newUser);
+                            if (newUserId != null) {
+                                JOptionPane.showMessageDialog(frame, "Usuário cadastrado com sucesso.");
+                                boolean returnToUserMenu = menuTask.interfaceMenuTask(newUserId);
+                                if (returnToUserMenu) {
+                                    break;
+                                }
+                            } else {
+                                JOptionPane.showMessageDialog(frame, "Houve um problema ao criar o usuário.");
+                            }
                         }
                     } catch (Exception e) {
                         JOptionPane.showMessageDialog(frame, "Houve um problema ao criar o usuário. Por favor, tente novamente.");
