@@ -121,7 +121,7 @@ public class Task {
 
     @Override
     public String toString() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
         String formattedDateCreated = dateCreated.format(formatter);
 
         if (dateCompleted != null) {

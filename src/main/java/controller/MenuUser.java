@@ -14,16 +14,72 @@ public class MenuUser extends UserDAO {
         frame.setAlwaysOnTop(true);
         while (true) {
             int choice = JOptionPane.showOptionDialog(frame, "Selecione uma operação:", "Menu", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, menu, menu[0]);
-
             switch (choice) {
                 case 0:
                     try {
                         ObjectId userIdentifier = login();
                         if (userIdentifier != null) {
-                            boolean returnToUserMenu = menuTask.interfaceMenuTask(userIdentifier);
-                            if (returnToUserMenu) {
-                                break;
-                            }
+                            String[] menuOthersUser= {"Menu de tarefas","Alterar senha", "Alterar e-mail","Informações sobre a conta","Voltar"};
+                           boolean continueLoop = true;
+                           do {
+                               int choiceOthers = JOptionPane.showOptionDialog(frame, "Selecione uma operação:", "Menu usuário", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, menuOthersUser, menuOthersUser[0]);
+                               switch (choiceOthers) {
+                                   case 0:
+                                       boolean returnToUserMenu = menuTask.interfaceMenuTask(userIdentifier);
+                                       if (returnToUserMenu) {
+                                           break;
+                                       }
+                                       break;
+                                   case 1:
+                                       JPasswordField newPasswordField = new JPasswordField();
+                                       Object[] message = {
+                                               "Insira sua nova senha:", newPasswordField
+                                       };
+
+                                       int option = JOptionPane.showConfirmDialog(null, message, "Senha", JOptionPane.OK_CANCEL_OPTION);
+                                       if (option == JOptionPane.OK_OPTION) {
+                                           String newPassword = new String(newPasswordField.getPassword());
+
+                                           if (newPassword.isEmpty()) {
+                                               JOptionPane.showMessageDialog(null, "A senha não pode ser vazia.");
+                                           } else {
+                                               if (updatePassword(userIdentifier, newPassword)) {
+                                                   JOptionPane.showMessageDialog(frame, "Senha trocada com sucesso!");
+                                               } else {
+                                                   JOptionPane.showMessageDialog(frame, "Houve um problema para trocar sua senha, tente novamente..");
+                                               }
+                                           }
+                                       }
+                                       break;
+                                   case 2:
+                                       String newEmail = JOptionPane.showInputDialog(frame, "Insira o seu novo endereço de e-mail:");
+                                       if (newEmail == null || newEmail.isEmpty()) {
+                                           JOptionPane.showMessageDialog(frame, "O novo e-mail não pode ser vazio.");
+                                       } else {
+                                           if (updateEmail(userIdentifier, newEmail)) {
+                                               JOptionPane.showMessageDialog(frame, "E-mail trocado com sucesso !");
+                                           } else {
+                                               JOptionPane.showMessageDialog(frame, "Houve um problema para trocar seu e-mail, tente novamente.");
+                                           }
+                                       }
+                                       break;
+                                   case 3:
+                                       User user;
+                                       user = getUserInfo(userIdentifier);
+                                       if (user != null) {
+                                           JOptionPane.showMessageDialog(frame, user.toString());
+                                       } else {
+                                           JOptionPane.showMessageDialog(frame, "Não foi possível exibir os dados, tente novamente.");
+                                       }
+                                       break;
+                                   case 4:
+                                       continueLoop = false;
+                                       break;
+                                   default:
+                                       JOptionPane.showMessageDialog(frame, "Escolha uma opção válida do menu.");
+                                       break;
+                               }
+                           }while (continueLoop);
                         } else {
                             JOptionPane.showMessageDialog(frame, "Falha no login. Por favor, verifique seu nome de usuário e senha.");
                         }
@@ -56,7 +112,7 @@ public class MenuUser extends UserDAO {
                             User newUser = new User(username, password, email, LocalDateTime.now());
                             ObjectId newUserId = create(newUser);
                             if (newUserId != null) {
-                                JOptionPane.showMessageDialog(frame, "Usuário cadastrado com sucesso.");
+                                JOptionPane.showMessageDialog(frame, "Usuário registrado com sucesso.");
                                 boolean returnToUserMenu = menuTask.interfaceMenuTask(newUserId);
                                 if (returnToUserMenu) {
                                     break;
@@ -74,7 +130,7 @@ public class MenuUser extends UserDAO {
                         ObjectId userIdentifier = login();
                         if (userIdentifier != null) {
                             String choiceUser = JOptionPane.showInputDialog(frame, "Tem certeza que deseja excluir sua conta ? Y/N").toLowerCase();
-                            if (choiceUser == null || choiceUser.isEmpty() || (!choiceUser.equals("y") && !choiceUser.equals("n"))) {
+                            if (choiceUser.isEmpty() || !choiceUser.equals("y") && !choiceUser.equals("n")) {
                                 JOptionPane.showMessageDialog(frame, "Por favor, insira 'y' para confirmar ou 'n' para cancelar.");
                                 break;
                             }

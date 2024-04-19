@@ -8,8 +8,9 @@ import java.util.List;
 
 public class MenuTask extends TaskDAO {
     public boolean interfaceMenuTask(ObjectId userId){
-        String[] menu = {"Criar tarefa", "Buscar tarefa","Editar tarefa", "Excluir tarefa", "Concluir tarefa", "Sair"};
+        String[] menu = {"Criar tarefa", "Buscar tarefa","Editar tarefa", "Excluir tarefa", "Concluir tarefa", "Voltar"};
         List<Task> searchList;
+        StringBuilder tasksString = new StringBuilder();
         JFrame frame = new JFrame();
         frame.setAlwaysOnTop(true);
 
@@ -65,17 +66,18 @@ public class MenuTask extends TaskDAO {
                                 String titleSearch = JOptionPane.showInputDialog(frame, "Insira o titulo para pesquisa: ");
                                 searchList = searchTasks(userId, null, titleSearch, null);
                                 for(Task task : searchList){
-                                    //JOptionPane.showMessageDialog(null, task.toString());
+                                    tasksString.append(task.toString()).append("\n\n");
                                     System.out.println(task.toString());
                                 }
+                                JOptionPane.showMessageDialog(frame, tasksString.toString());
                                 break;
                             case 1:
                                 String tagSearch = JOptionPane.showInputDialog(frame, "Insira a tag para pesquisa: ");
                                 searchList = searchTasks(userId, tagSearch, null, null);
                                 for(Task task : searchList){
-                                    //JOptionPane.showMessageDialog(null, task.toString());
-                                    System.out.println(task.toString());
+                                    tasksString.append(task.toString()).append("\n\n");
                                 }
+                                JOptionPane.showMessageDialog(frame, tasksString.toString());
                                 break;
                             case 2:
                                 String prioritySearch = JOptionPane.showInputDialog(frame, "Insira o grau de prioridade para pesquisa: ");
@@ -83,9 +85,9 @@ public class MenuTask extends TaskDAO {
                                     int priority = Integer.parseInt(prioritySearch);
                                     searchList = searchTasks(userId, null, null, priority);
                                     for(Task task : searchList){
-                                        //JOptionPane.showMessageDialog(null, task.toString());
-                                        System.out.println(task.toString());
+                                        tasksString.append(task.toString()).append("\n\n");;
                                     }
+                                    JOptionPane.showMessageDialog(frame, tasksString.toString());
                                 } catch (NumberFormatException e) {
                                     JOptionPane.showMessageDialog(frame, "Por favor, insira um número válido para a prioridade.");
                                 } catch (Exception e) {
@@ -95,17 +97,19 @@ public class MenuTask extends TaskDAO {
                             case 3:
                                 searchList = searchTasks(userId, null, null, null);
                                 for(Task task : searchList){
-                                    //JOptionPane.showMessageDialog(null, task.toString());
-                                    System.out.println(task.toString());
+                                    tasksString.append(task.toString()).append("\n\n");
                                 }
+                                JOptionPane.showMessageDialog(frame, tasksString.toString());
                                 break;
                             default:
                                 JOptionPane.showMessageDialog(frame, "Opção inválida !");
                                 break;
                         }
                     }catch (Exception e) {
-                        JOptionPane.showMessageDialog(frame, e);
+                        JOptionPane.showMessageDialog(frame, "Ocorreu um erro ao realizar a pesquisa. Tente novamente.");
+                        System.out.println(e.getMessage());
                     }
+                    tasksString.setLength(0);
                     break;
                 case 2:
                     try {

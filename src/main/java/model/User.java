@@ -4,6 +4,7 @@ import org.bson.codecs.pojo.annotations.BsonProperty;
 import org.bson.types.ObjectId;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class User {
     @BsonId
@@ -65,6 +66,17 @@ public class User {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    @Override
+    public String toString() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+        String formattedcreatedAt = createdAt.format(formatter);
+        return "Usuário " + "\n" +
+                "Username: " + username + "\n" +
+                "Senha: " + passwordHash + "\n" +
+                "E-mail: " + email + "\n" +
+                "Data de criação da conta: " + formattedcreatedAt + "\n";
     }
 
 }
