@@ -14,6 +14,7 @@ import org.bson.codecs.pojo.PojoCodecProvider;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 import service.MongoDBConfig;
+import javax.swing.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +33,7 @@ public class TaskDAO {
 
     public boolean createTask(Task task) {
         if (isTaskExist(task.getUserId(), task.getTitle())){
-            return false;
+            throw new IllegalArgumentException("A tarefa já existe.");
         }
         collection.insertOne(task);
         return true;
@@ -48,13 +49,19 @@ public class TaskDAO {
             update.append("$set", new Document("description",newDescription));
         }
         UpdateResult result = collection.updateOne(filter, update);
-        return result.getMatchedCount() > 0;
+        if (result.getMatchedCount() == 0){
+            throw  new IllegalArgumentException("Tarefa não encontrada.");
+        }
+        return true;
     }
 
     public boolean deleteTaskById(ObjectId taskId, ObjectId userId) {
         Bson filter = Filters.and(Filters.eq("_id", taskId), Filters.eq("user_id", userId));
         DeleteResult result = collection.deleteOne(filter);
-        return result.getDeletedCount() > 0;
+        if (result.getDeletedCount() == 0){
+            throw  new IllegalArgumentException("Tarefa não encontrada.");
+        }
+        return true;
     }
 
     public List<Task> searchTasks(ObjectId userId, String tag, String title, Integer priority) {
@@ -106,6 +113,9 @@ public class TaskDAO {
                 );
 
         UpdateResult result = collection.updateOne(filter, update);
-        return result.getMatchedCount() > 0;
+        if (result.getMatchedCount() == 0){
+            throw  new IllegalArgumentException("Tarefa não encontrada.");
+        }
+        return true;
     }
 }

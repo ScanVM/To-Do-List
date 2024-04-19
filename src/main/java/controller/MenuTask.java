@@ -57,10 +57,17 @@ public class MenuTask extends TaskDAO {
                                 break;
                             case 2:
                                 String prioritySearch = JOptionPane.showInputDialog(frame, "Insira o grau de prioridade para pesquisa: ");
-                                searchList = searchTasks(userId, null, null, Integer.parseInt(prioritySearch));
-                                for(Task task : searchList){
-                                    //JOptionPane.showMessageDialog(null, task.toString());
-                                    System.out.println(task.toString());
+                                try {
+                                    int priority = Integer.parseInt(prioritySearch);
+                                    searchList = searchTasks(userId, null, null, priority);
+                                    for(Task task : searchList){
+                                        //JOptionPane.showMessageDialog(null, task.toString());
+                                        System.out.println(task.toString());
+                                    }
+                                } catch (NumberFormatException e) {
+                                    JOptionPane.showMessageDialog(frame, "Por favor, insira um número válido para a prioridade.");
+                                } catch (Exception e) {
+                                    JOptionPane.showMessageDialog(frame, "Houve um problema ao buscar as tarefas. Por favor, tente novamente.");
                                 }
                                 break;
                             case 3:
