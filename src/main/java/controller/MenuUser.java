@@ -50,10 +50,13 @@ public class MenuUser extends UserDAO {
                                        if (option == JOptionPane.OK_OPTION) {
                                            String newPassword = new String(newPasswordField.getPassword());
 
+                                           //Criptografia da senha
+                                           String passwordHash = BCrypt.hashpw(newPassword, BCrypt.gensalt());
+
                                            if (newPassword.isEmpty()) {
                                                JOptionPane.showMessageDialog(null, "A senha não pode ser vazia.");
                                            } else {
-                                               if (updatePassword(userIdentifier, newPassword)) {
+                                               if (updatePassword(userIdentifier, passwordHash)) {
                                                    JOptionPane.showMessageDialog(frame, "Senha trocada com sucesso!");
                                                } else {
                                                    JOptionPane.showMessageDialog(frame, "Houve um problema para trocar sua senha, tente novamente..");
@@ -213,7 +216,6 @@ public class MenuUser extends UserDAO {
                 System.out.println(passwordHashConfirm);
                 //Valida se a senha digitada é igual a senha do banco
                 if (passwordHashConfirm != null && BCrypt.checkpw(password,passwordHashConfirm)){
-                    System.out.println("Vou lá");
                     //Autentica o usuário nesse método
                     return authenticateUser(username, passwordHashConfirm);
                 }
