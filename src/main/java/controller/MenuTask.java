@@ -67,9 +67,7 @@ public class MenuTask extends TaskDAO {
                                 searchList = searchTasks(userId, null, titleSearch, null);
                                 for(Task task : searchList){
                                     tasksString.append(task.toString()).append("\n\n");
-                                    System.out.println(task.toString());
                                 }
-                                JOptionPane.showMessageDialog(frame, tasksString.toString());
                                 break;
                             case 1:
                                 String tagSearch = JOptionPane.showInputDialog(frame, "Insira a tag para pesquisa: ");
@@ -77,7 +75,6 @@ public class MenuTask extends TaskDAO {
                                 for(Task task : searchList){
                                     tasksString.append(task.toString()).append("\n\n");
                                 }
-                                JOptionPane.showMessageDialog(frame, tasksString.toString());
                                 break;
                             case 2:
                                 String prioritySearch = JOptionPane.showInputDialog(frame, "Insira o grau de prioridade para pesquisa: ");
@@ -87,7 +84,6 @@ public class MenuTask extends TaskDAO {
                                     for(Task task : searchList){
                                         tasksString.append(task.toString()).append("\n\n");;
                                     }
-                                    JOptionPane.showMessageDialog(frame, tasksString.toString());
                                 } catch (NumberFormatException e) {
                                     JOptionPane.showMessageDialog(frame, "Por favor, insira um número válido para a prioridade.");
                                 } catch (Exception e) {
@@ -99,7 +95,6 @@ public class MenuTask extends TaskDAO {
                                 for(Task task : searchList){
                                     tasksString.append(task.toString()).append("\n\n");
                                 }
-                                JOptionPane.showMessageDialog(frame, tasksString.toString());
                                 break;
                             default:
                                 JOptionPane.showMessageDialog(frame, "Opção inválida !");
@@ -109,6 +104,7 @@ public class MenuTask extends TaskDAO {
                         JOptionPane.showMessageDialog(frame, "Ocorreu um erro ao realizar a pesquisa. Tente novamente.");
                         System.out.println(e.getMessage());
                     }
+                    JOptionPane.showMessageDialog(frame, tasksString.toString());
                     tasksString.setLength(0);
                     break;
                 case 2:
