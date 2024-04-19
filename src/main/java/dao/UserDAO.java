@@ -137,4 +137,20 @@ public class UserDAO {
         Bson filter = Filters.eq("_id", userId);
         return collection.find(filter).first();
     }
+
+    /**
+     * Este método é usado para obter o hash da senha de um usuário específico.
+     *
+     * @param username O nome de usuário do usuário cujo hash da senha é necessário.
+     * @return Retorna o hash da senha do usuário se o usuário existir e tiver um hash de senha. Caso contrário, retorna null.
+     */
+    public String getPasswordHash(String username) {
+        Bson filter = Filters.eq("username", username);
+        User user = collection.find(filter).first();
+        if (user.getPasswordHash() != null){
+            System.out.println("Cheguei aqui !");
+            return user.getPasswordHash();
+        }
+        return null;
+    }
 }

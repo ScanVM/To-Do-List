@@ -2,6 +2,8 @@ package controller;
 import dao.UserDAO;
 import model.User;
 import org.bson.types.ObjectId;
+import org.mindrot.jbcrypt.BCrypt;
+
 import javax.swing.*;
 import java.time.LocalDateTime;
 
@@ -116,8 +118,12 @@ public class MenuUser extends UserDAO {
                                 JOptionPane.showMessageDialog(frame, "Username, senha e e-mail não podem ser vazios.");
                                 break;
                             }
+                            //Criptografia da senha
+                            String passwordHash = BCrypt.hashpw(password, BCrypt.gensalt());
+
                             //Crio o objeto user
-                            User newUser = new User(username, password, email, LocalDateTime.now());
+                            User newUser = new User(username, passwordHash, email, LocalDateTime.now());
+
                             //Envio para o banco o novo usuário
                             ObjectId newUserId = create(newUser);
                             if (newUserId != null) {
@@ -202,8 +208,16 @@ public class MenuUser extends UserDAO {
                     JOptionPane.showMessageDialog(frame, "A senha não pode ser vazia.");
                     return null;
                 }
-                //Autentica o usuário nesse método
-                return authenticateUser(username, password);
+                // Recebe a senha em criptografada do banco
+                String passwordHashConfirm = getPasswordHash(username);
+                System.out.println(passwordHashConfirm);
+                //Valida se a senha digitada é igual a senha do banco
+                if (passwordHashConfirm != null && BCrypt.checkpw(password,passwordHashConfirm)){
+                    System.out.println("Vou lá");
+                    //Autentica o usuário nesse método
+                    return authenticateUser(username, passwordHashConfirm);
+                }
+                return null;
             } else {
                 return null;
             }
