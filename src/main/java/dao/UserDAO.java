@@ -9,6 +9,7 @@ import model.User;
 import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
+import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 import service.MongoDBConfig;
 
@@ -27,7 +28,7 @@ public class UserDAO {
     }
 
     public ObjectId create(User user) {
-        if (isUsernameExists(user.getUserame())){
+        if (isUsernameExists(user.getUsername())){
             System.out.print("Usuário já existe. Crie outro username.");
             return null;
         }
@@ -48,7 +49,7 @@ public class UserDAO {
         return existingUser != null;
     }
     public ObjectId authenticateUser(String username, String passwordHash) {
-        Document filter = new Document("username", username).append("passwordHash", passwordHash);
+        Bson filter = new Document("username", username).append("passwordHash", passwordHash);
         User existingUser = collection.find(filter).first();
 
         if (existingUser != null){

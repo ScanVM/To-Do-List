@@ -20,15 +20,15 @@ public class MenuUser extends UserDAO {
                     try {
                         ObjectId userIdentifier = login();
                         if (userIdentifier != null) {
-                           boolean returnToUserMenu = menuTask.interfaceMenuTask(userIdentifier);
-                           if (returnToUserMenu) {
-                               break;
-                           }
+                            boolean returnToUserMenu = menuTask.interfaceMenuTask(userIdentifier);
+                            if (returnToUserMenu) {
+                                break;
+                            }
+                        } else {
+                            JOptionPane.showMessageDialog(frame, "Falha no login. Por favor, verifique seu nome de usuário e senha.");
                         }
-
-                    }catch (Exception e) {
-                        System.out.println(e.getMessage());
-                        //JOptionPane.showMessageDialog(null, e);
+                    } catch (Exception e) {
+                        JOptionPane.showMessageDialog(frame, "Houve um problema ao fazer login. Por favor, tente novamente.");
                     }
                     break;
                 case 1:
@@ -36,15 +36,22 @@ public class MenuUser extends UserDAO {
                         String username = JOptionPane.showInputDialog(frame, "Insira um username: ");
                         String password = JOptionPane.showInputDialog(frame, "Insira uma senha: ");
                         String email = JOptionPane.showInputDialog(frame, "Insira seu e-mail: ");
-                        User newUser = new User(username,password,email, LocalDateTime.now());
-                        ObjectId newUserId = create(newUser);
-                        boolean returnToUserMenu = menuTask.interfaceMenuTask(newUserId);
-                        if (returnToUserMenu) {
+                        if (username == null || username.isEmpty() ||password == null || password.isEmpty() || email == null || email.isEmpty()) {
+                            JOptionPane.showMessageDialog(frame, "Username, senha e e-mail não podem ser vazios.");
                             break;
                         }
-                    }catch (Exception e) {
-                        System.out.println(e.getMessage());
-                        //JOptionPane.showMessageDialog(null, e);
+                        User newUser = new User(username,password,email, LocalDateTime.now());
+                        ObjectId newUserId = create(newUser);
+                        if (newUserId != null) {
+                            boolean returnToUserMenu = menuTask.interfaceMenuTask(newUserId);
+                            if (returnToUserMenu) {
+                                break;
+                            }
+                        } else {
+                            JOptionPane.showMessageDialog(frame, "Houve um problema ao criar o usuário.");
+                        }
+                    } catch (Exception e) {
+                        JOptionPane.showMessageDialog(frame, "Houve um problema ao criar o usuário. Por favor, tente novamente.");
                     }
                     break;
                 case 2:
@@ -52,18 +59,26 @@ public class MenuUser extends UserDAO {
                         ObjectId userIdentifier = login();
                         if (userIdentifier != null) {
                             String choiceUser = JOptionPane.showInputDialog(frame, "Tem certeza que deseja excluir sua conta ? Y/N").toLowerCase();
+                            if (choiceUser == null || choiceUser.isEmpty() || (!choiceUser.equals("y") && !choiceUser.equals("n"))) {
+                                JOptionPane.showMessageDialog(frame, "Por favor, insira 'y' para confirmar ou 'n' para cancelar.");
+                                break;
+                            }
                             if (choiceUser.equals("y")) {
                                 try {
                                     if (deleteUserById(userIdentifier)) {
-                                        JOptionPane.showMessageDialog(frame, "Excluido com sucesso !");
+                                        JOptionPane.showMessageDialog(frame, "Excluído com sucesso!");
+                                    } else {
+                                        JOptionPane.showMessageDialog(frame, "Houve um problema para remover sua conta.");
                                     }
                                 } catch (Exception e) {
-                                    JOptionPane.showMessageDialog(frame, "Houve um erro ao excluir sua conta !");
+                                    JOptionPane.showMessageDialog(frame, "Houve um erro ao excluir sua conta. Por favor, tente novamente.");
                                 }
                             }
+                        } else {
+                            JOptionPane.showMessageDialog(frame, "Falha no login. Por favor, verifique seu nome de usuário e senha.");
                         }
-                    }catch (Exception e) {
-                        JOptionPane.showMessageDialog(frame, e);
+                    } catch (Exception e) {
+                        JOptionPane.showMessageDialog(frame, "Houve um problema ao fazer login. Por favor, tente novamente.");
                     }
                     break;
                 case 3:
@@ -76,12 +91,36 @@ public class MenuUser extends UserDAO {
             }
         }
     }
+
     public ObjectId login() {
-        frame.setAlwaysOnTop(true);
-        JPasswordField passwordField = new JPasswordField();
-        String username = JOptionPane.showInputDialog(frame, "Insira seu username: ");
-        JOptionPane.showConfirmDialog(frame, passwordField, "Insira sua senha: ",JOptionPane.OK_CANCEL_OPTION);
-        String password = new String(passwordField.getPassword());
-        return authenticateUser(username, password);
+        try {
+            JTextField usernameField = new JTextField();
+            JPasswordField passwordField = new JPasswordField();
+            Object[] message = {
+                    "Insira seu username:", usernameField,
+                    "Insira sua senha:", passwordField
+            };
+
+            int option = JOptionPane.showConfirmDialog(frame, message, "Login", JOptionPane.OK_CANCEL_OPTION);
+            if (option == JOptionPane.OK_OPTION) {
+                String username = usernameField.getText();
+                String password = new String(passwordField.getPassword());
+
+                if (username.isEmpty()) {
+                    JOptionPane.showMessageDialog(frame, "O nome de usuário não pode ser vazio.");
+                    return null;
+                }
+                if (password.isEmpty()) {
+                    JOptionPane.showMessageDialog(frame, "A senha não pode ser vazia.");
+                    return null;
+                }
+                return authenticateUser(username, password);
+            } else {
+                return null;
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(frame, "Houve um problema ao fazer login. Por favor, tente novamente.");
+            return null;
+        }
     }
 }

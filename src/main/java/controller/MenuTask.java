@@ -88,6 +88,10 @@ public class MenuTask extends TaskDAO {
                 case 2:
                     try {
                         String title = JOptionPane.showInputDialog(frame, "Insira o titulo de sua tarefa: ");
+                        if (title == null || title.isEmpty()) {
+                            JOptionPane.showMessageDialog(frame, "O título não pode ser vazio.");
+                            break;
+                        }
                         ObjectId taskIdUpdate = findTaskIdByTitle(userId, title);
                         if (taskIdUpdate != null) {
                             String[] menuUpdate = {"Editar titulo", "Editar descrição","Editar os dois"};
@@ -95,12 +99,20 @@ public class MenuTask extends TaskDAO {
                             switch (choiceUpdate) {
                                 case 0:
                                     String newTitle = JOptionPane.showInputDialog(frame, "Insira um novo titulo para sua tarefa: ");
+                                    if (newTitle == null || newTitle.isEmpty()) {
+                                        JOptionPane.showMessageDialog(frame, "O novo título não pode ser vazio.");
+                                        break;
+                                    }
                                     if (updateTask(taskIdUpdate, userId, newTitle, null)){
                                         JOptionPane.showMessageDialog(frame, "Título atualizado com sucesso!");
                                     }
                                     break;
                                 case 1:
                                     String newDescription = JOptionPane.showInputDialog(frame, "Insira uma nova descrição para sua tarefa: ");
+                                    if (newDescription == null || newDescription.isEmpty()) {
+                                        JOptionPane.showMessageDialog(frame, "A nova descrição não pode ser vazia.");
+                                        break;
+                                    }
                                     if (updateTask(taskIdUpdate, userId, null, newDescription)){
                                         JOptionPane.showMessageDialog(frame, "Descrição atualizada com sucesso!");
                                     }
@@ -108,6 +120,10 @@ public class MenuTask extends TaskDAO {
                                 case 2:
                                     String newTitleOption2 = JOptionPane.showInputDialog(frame, "Insira um novo titulo para sua tarefa: ");
                                     String newDescriptionOption2 = JOptionPane.showInputDialog(frame, "Insira uma nova descrição para sua tarefa: ");
+                                    if (newTitleOption2 == null || newTitleOption2.isEmpty() || newDescriptionOption2 == null || newDescriptionOption2.isEmpty()) {
+                                        JOptionPane.showMessageDialog(frame, "O novo título e a nova descrição não podem ser vazios.");
+                                        break;
+                                    }
                                     if (updateTask(taskIdUpdate, userId, newTitleOption2, newDescriptionOption2)){
                                         JOptionPane.showMessageDialog(frame, "Título e descrição atualizados com sucesso!");
                                     }
@@ -116,36 +132,53 @@ public class MenuTask extends TaskDAO {
                                     JOptionPane.showMessageDialog(frame, "Opção inválida.");
                                     break;
                             }
+                        } else {
+                            JOptionPane.showMessageDialog(frame, "Tarefa não encontrada.");
                         }
-
-                    }catch (Exception e) {
-                        JOptionPane.showMessageDialog(frame, e);
+                    } catch (Exception e) {
+                        JOptionPane.showMessageDialog(frame, "Houve um problema ao atualizar a tarefa. Por favor, tente novamente.");
                     }
                     break;
                 case 3:
-                    String title = JOptionPane.showInputDialog(frame, "Insira o titulo de sua tarefa: ");
-                    ObjectId taskId = findTaskIdByTitle(userId, title);
-                    if (taskId != null) {
-                        if (deleteTaskById(taskId, userId)) {
-                            JOptionPane.showMessageDialog(frame, "Tarefa removida com sucesso!");
-                        } else {
-                            JOptionPane.showMessageDialog(frame, "Houve um problema para remover sua tarefa.");
+                    try {
+                        String title = JOptionPane.showInputDialog(frame, "Insira o titulo de sua tarefa: ");
+                        if (title == null || title.isEmpty()) {
+                            JOptionPane.showMessageDialog(frame, "O título não pode ser vazio.");
+                            break;
                         }
-                    }else {
-                        JOptionPane.showMessageDialog(frame, "Tarefa não encontrada.");
+                        ObjectId taskId = findTaskIdByTitle(userId, title);
+                        if (taskId != null) {
+                            if (deleteTaskById(taskId, userId)) {
+                                JOptionPane.showMessageDialog(frame, "Tarefa removida com sucesso!");
+                            } else {
+                                JOptionPane.showMessageDialog(frame, "Houve um problema para remover sua tarefa.");
+                            }
+                        } else {
+                            JOptionPane.showMessageDialog(frame, "Tarefa não encontrada.");
+                        }
+                    } catch (Exception e) {
+                        JOptionPane.showMessageDialog(frame, "Houve um problema ao remover a tarefa. Por favor, tente novamente.");
                     }
                     break;
                 case 4:
-                    String titleCompleted = JOptionPane.showInputDialog(frame, "Insira o titulo de sua tarefa: ");
-                    ObjectId taskIdCompleted = findTaskIdByTitle(userId, titleCompleted);
-                    if (taskIdCompleted != null) {
-                        if (completeTask(taskIdCompleted, userId)) {
-                            JOptionPane.showMessageDialog(frame, "Tarefa concluida com sucesso!");
-                        } else {
-                            JOptionPane.showMessageDialog(frame, "Houve um problema para concluir sua tarefa.");
+                    try {
+                        String titleCompleted = JOptionPane.showInputDialog(frame, "Insira o titulo de sua tarefa: ");
+                        if (titleCompleted == null || titleCompleted.isEmpty()) {
+                            JOptionPane.showMessageDialog(frame, "O título não pode ser vazio.");
+                            break;
                         }
-                    }else {
-                        JOptionPane.showMessageDialog(frame, "Tarefa não encontrada.");
+                        ObjectId taskIdCompleted = findTaskIdByTitle(userId, titleCompleted);
+                        if (taskIdCompleted != null) {
+                            if (completeTask(taskIdCompleted, userId)) {
+                                JOptionPane.showMessageDialog(frame, "Tarefa concluída com sucesso!");
+                            } else {
+                                JOptionPane.showMessageDialog(frame, "Houve um problema para concluir sua tarefa.");
+                            }
+                        } else {
+                            JOptionPane.showMessageDialog(frame, "Tarefa não encontrada.");
+                        }
+                    } catch (Exception e) {
+                        JOptionPane.showMessageDialog(frame, "Houve um problema ao concluir a tarefa. Por favor, tente novamente.");
                     }
                     break;
                 case 5:

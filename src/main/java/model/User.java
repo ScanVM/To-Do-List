@@ -35,11 +35,11 @@ public class User {
         this.id = id;
     }
 
-    public String getUserame() {
+    public String getUsername() {
         return username;
     }
 
-    public void setUserame(String userame) {
+    public void setUsername(String userame) {
         this.username = userame;
     }
 
