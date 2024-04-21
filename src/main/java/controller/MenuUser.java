@@ -170,7 +170,7 @@ public class MenuUser extends UserDAO {
                             JOptionPane.showMessageDialog(frame, "Falha no login. Por favor, verifique seu nome de usuário e senha.");
                         }
                     } catch (Exception e) {
-                        JOptionPane.showMessageDialog(frame, "Houve um problema ao fazer login. Por favor, tente novamente.");
+                        JOptionPane.showMessageDialog(frame, "Houve um problema ao identificar usuário. Por favor, tente novamente.");
                     }
                     break;
                 case 3: //Fecha o programa
